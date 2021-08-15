@@ -349,6 +349,11 @@ async def balanceERR(ctx, error):
 async def updateEggs():
     saveECO(meastatt)
 
+@bot.command(name='kitty', aliases=['cat', 'kittykicius', 'kittykiciuś'])
+async def kitty(ctx):
+    choose_photo = random.randint(0, len(os.listdir('Kitties')))
+    await ctx.send(file=discord.File('Kitties/'+os.listdir('Kitties')[choose_photo]))
+
 @bot.command(name='logout')
 async def logout(ctx):
     if ctx.author.id == 509002743256580107:
