@@ -15,7 +15,6 @@ import yaml
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
-GUILD = os.getenv('GUILD_ID')
 
 def make_uchr(code: str):
     return chr(int(code.lstrip("U+").zfill(8), 16))
@@ -146,39 +145,6 @@ async def hello(ctx, link):
     infoEmbed.set_image(url=thumbnail)
 
     await ctx.send(embed=infoEmbed)
-    
-@bot.command(name='downloadaudio')
-async def download(ctx, link):
-    
-    try:
-        video = pytube.YouTube(link)
-    except:
-        pass
-
-    await ctx.send('Downloading the audio.....')
-
-    audio = video.streams.get_audio_only()
-
-    audio.download('downloads', 'YT_VIDEO' + '.mp4')
-
-    inMP4 = os.getcwd() + '/downloads/' + 'YT_VIDEO' + '.mp4'
-    outMP3 = os.getcwd() + '/downloads/' + 'YT_AUDIO' + '.mp3'
-
-    os.system('ffmpeg -i %s -vn %s' % (inMP4, outMP3))
-
-    try:
-        os.rename(os.getcwd() + '/downloads/' + 'YT_AUDIO' + '.mp3', os.getcwd() + '/downloads/' + video.streams.get_audio_only().title + '.mp3')
-        Err = False
-    except OSError:
-        Err = True
-        os.rename(os.getcwd() + '/downloads/' + 'YT_AUDIO' + '.mp3', os.getcwd() + '/downloads/' + 'ERRDname' + '.mp3')
-
-    await ctx.send(ctx.author.display_name + ', here\'s your audio:')
-    if Err:
-        await ctx.send(file=discord.File('downloads/'+ 'ERRDname' + '.mp3'))
-        Err = False
-    else:
-        await ctx.send(file=discord.File('downloads/'+ video.streams.get_audio_only().title + '.mp3'))
 
 @bot.command(name='showmembers')
 async def showMembers(ctx):
