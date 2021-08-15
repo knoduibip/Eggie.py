@@ -3,10 +3,10 @@
 # Table of contens
 
 * [Introduction](#Introduction)
-* [Inviting the bot](#Inviting_the_bot)
+* [Inviting the bot](#Inviting-the-bot)
 * [Installation](#Installation)
-* [Running the bot](#Running_the_bot)
-* [Eggies commands](#Eggies_commands)
+* [Running the bot](#Running-the-bot)
+* [Eggies commands](#Eggies-commands)
 
 # Introduction
 
