@@ -1,5 +1,41 @@
 <h1>Eggie.py</h1>
 
-# Introduction
+# Table of contens
 
 * [Introduction](#Introduction)
+* [Inviting the bot](#Inviting_the_bot)
+* [Installation](#Installation)
+* [Running the bot](#Running_the_bot)
+
+# Introduction
+
+Eggie is a discord bot written in the Python programming language and the discord.py library.
+It was made as a project to learn about discord.py, so it isn't a good bot by any means.<br><br>
+Eggie has:
+
+* **a Youtube integration**
+* **a Simple economy system**
+* **some funny commands**
+
+# Inviting the bot
+
+To invite the bot, contact the author. You can find me on discord - *Egg#0690*.
+
+# Installation
+
+To install the bot:
+
+1. Download all of the files from the repository
+2. Make sure that you have Python v.3.9+ downloaded
+3. Download the following libraries using pip
+* *discord.py*
+* *python-dotenv*
+* *pyyaml*
+* *pytube*
+4. Get your discord bots token and input it in the right place in the ".env" file
+
+# Running the bot
+
+To run the bot on your machine, just run the "bot.py" file.
+
+If you want to run the bot 24/7, I would recommend watching [this tutorial](https://www.youtube.com/watch?v=BPvg9bndP1U&t=693s&ab_channel=TechWithTim)
