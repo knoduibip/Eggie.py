@@ -43,4 +43,4 @@ If you want to run the bot 24/7, I would recommend watching [this tutorial](http
 
 # Eggies commands
 
-To check all of Eggies commands type ```^help~```, after you've invited him to your server
+To check all of Eggies commands type ```^help```, after you've invited him to your server
