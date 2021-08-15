@@ -6,11 +6,12 @@
 * [Inviting the bot](#Inviting_the_bot)
 * [Installation](#Installation)
 * [Running the bot](#Running_the_bot)
+* [Eggies commands](#Eggies_commands)
 
 # Introduction
 
 Eggie is a discord bot written in the Python programming language and the discord.py library.
-It was made as a project to learn about discord.py, so it isn't a good bot by any means.<br><br>
+It was made as a project to learn about discord.py, so it isn't a good bot by any means.<br>
 Eggie has:
 
 * **a Youtube integration**
@@ -39,3 +40,7 @@ To install the bot:
 To run the bot on your machine, just run the "bot.py" file.
 
 If you want to run the bot 24/7, I would recommend watching [this tutorial](https://www.youtube.com/watch?v=BPvg9bndP1U&t=693s&ab_channel=TechWithTim)
+
+# Eggies commands
+
+To check all of Eggies commands type ```^help~```, after you've invited him to your server
