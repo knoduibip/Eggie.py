@@ -1,0 +1,4 @@
+discord.py
+git+https://github.com/nficano/pytube
+pyyaml
+python-dotenv
