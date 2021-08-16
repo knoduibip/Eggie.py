@@ -13,10 +13,9 @@ from dotenv import load_dotenv
 from pytube.__main__ import YouTube
 import yaml
 
-HostID = os.getenv('HOST_ID')
-
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
+HostID = os.getenv('HOST_ID')
 
 def make_uchr(code: str):
     return chr(int(code.lstrip("U+").zfill(8), 16))
