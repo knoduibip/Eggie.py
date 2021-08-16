@@ -33,7 +33,7 @@ To install the bot:
 * *python-dotenv*
 * *pyyaml*
 * *pytube*
-4. Get your discord bots token and input it in the right place in the ".env" file
+4. Get your discord accounts ID, as well as your discord bots token and input them in the right places in the ".env" file.
 
 # Running the bot
 

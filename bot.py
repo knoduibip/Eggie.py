@@ -13,6 +13,8 @@ from dotenv import load_dotenv
 from pytube.__main__ import YouTube
 import yaml
 
+HostID = os.getenv('HOST_ID')
+
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 
