@@ -352,7 +352,7 @@ async def updateEggs():
 
 @bot.command(name='logout')
 async def logout(ctx):
-    if ctx.author.id == 509002743256580107:
+    if ctx.author.id == HostID:
         saveECO(meastatt)
         print('logging out...')
         await bot.close()
