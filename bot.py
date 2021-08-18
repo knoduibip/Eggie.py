@@ -1,3 +1,6 @@
+###############################################
+# Eggie.py - a bot made by Jakoobb
+###############################################
 
 import os
 import math
@@ -41,7 +44,10 @@ def saveECO(mean):
         with open('Economies/economy_' + str(name) + '.yml', 'w') as fi2:
             fi2.write(yaml.dump(inDict))
 
+def createFiles():
     for guild in bot.guilds:
+
+        print(guild.id)
 
         if 'feed_' + str(guild.id) + '.txt' not in os.listdir('Feeds'):
 
@@ -73,25 +79,8 @@ async def on_ready():
     print('$ Starting the bot... | ' + str(os.getpid()) + '\n')
 
     print('$ Creating the necessary files... \n')
-    for guild in bot.guilds:
-        if 'feed_' + str(guild.id) + '.txt' not in os.listdir('Feeds'):
 
-            open('Feeds/feed_' + str(guild.id) + '.txt', 'w')
-            print('\tFeeds/feed_' + str(guild.id) + '.txt was created')
-
-        if 'economy_' + str(guild.id) + '.yml' not in os.listdir('Economies'):
-
-            LaecoDict = dict()
-            for member in guild.members:
-                if not member.bot:
-                    LaecoDict[str(member.id)] = 0
-
-            with open('Economies/economy_' + str(guild.id) + '.yml', 'w') as ecf:
-                yaml.dump(LaecoDict, ecf)
-
-            print('\tEconomies/economy_' + str(guild.id) + '.yml was created\n')
-
-        meastatt[guild.id] = {mem.id : 0 for mem in guild.members if not mem.bot}
+    createFiles()
 
     print('$ Servers that the bot is currently in:\n')
     for guild in bot.guilds:
@@ -100,6 +89,7 @@ async def on_ready():
     print(f'{bot.user.name} is ready for action!')
     await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name="^help"))
     updateEggs.start()
+    updateFiles.start()
 
 @bot.event
 async def on_member_join(member):
@@ -246,6 +236,8 @@ async def feed(ctx, *args):
 
 @bot.command(name='economy', aliases=['leaderboard'])
 async def eco(ctx):
+    if 'Economies/' + 'economy_' + str(ctx.author.guild.id) + '.yml' not in os.listdir('Economies'):
+        pass
     leaderboard = dict()
     ecoEmbed = discord.Embed(title='Economy of ' + ctx.author.guild.name, color=0xF4FF00)
     with open('Economies/' + 'economy_' + str(ctx.author.guild.id) + '.yml', 'r') as ecoFile:
@@ -348,6 +340,10 @@ async def balanceERR(ctx, error):
 @tasks.loop(seconds=300)
 async def updateEggs():
     saveECO(meastatt)
+
+@tasks.loop(seconds=10)
+async def updateFiles():
+    createFiles()
 
 @bot.command(name='kitty', aliases=['cat', 'kittykicius', 'kittykiciuś'])
 async def kitty(ctx):
