@@ -341,7 +341,7 @@ async def balanceERR(ctx, error):
 async def updateEggs():
     saveECO(meastatt)
 
-@tasks.loop(seconds=10)
+@tasks.loop(seconds=600)
 async def updateFiles():
     createFiles()
 
