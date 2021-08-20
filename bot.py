@@ -20,6 +20,8 @@ load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 HostID = os.getenv('HOST_ID')
 
+chars = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789'
+
 def make_uchr(code: str):
     return chr(int(code.lstrip("U+").zfill(8), 16))
 
@@ -47,8 +49,6 @@ def saveECO(mean):
 def createFiles():
     for guild in bot.guilds:
 
-        print(guild.id)
-
         if 'feed_' + str(guild.id) + '.txt' not in os.listdir('Feeds'):
 
             open('Feeds/feed_' + str(guild.id) + '.txt', 'w')
@@ -64,6 +64,10 @@ def createFiles():
                 yaml.dump(LaecoDict, ecf)
 
         meastatt[guild.id] = {mem.id : 0 for mem in guild.members if not mem.bot}
+
+        if 'shop_' + str(guild.id) + '.yml' not in os.listdir('Shops'):
+
+            open('Shops/shop_' + str(guild.id) + '.yml', 'w').close()
 
 meastatt = dict()
 
@@ -337,6 +341,87 @@ async def balanceERR(ctx, error):
     else:
         raise error
 
+@bot.command(name='shop', aliases=['market', 'marketplace'])
+async def shop(ctx, action=None, itemNOID=None, price=None, remind=None, amount=None): # NOID stands for "name or id"
+    with open('Shops/shop_' + str(ctx.author.guild.id) + '.yml', 'r') as shopData:
+        shop_data = yaml.safe_load(shopData) or dict(items = dict())
+    if action:
+        args = [action, itemNOID, price, remind, amount]
+        if action == 'sell' and not None in args:
+            ID = ''
+            for i in range(8):
+                ID = ID + chars[random.randint(0, len(chars)-1)]
+            if remind != 'inf':
+                if int(remind) > 0:
+                    toRMD = ctx.author.id
+                else:
+                    toRMD = None
+            else:
+                toRMD = ctx.author.id
+            isBot = False
+            seller = ctx.author.id
+            shop_data['items'][ID] = [ID, itemNOID, int(price), amount, toRMD, isBot, seller]
+            with open('Shops/shop_' + str(ctx.author.guild.id) + '.yml', 'w') as shopData:
+                shopData.write(yaml.dump(shop_data))
+            sellEmbed = discord.Embed(title='Selling info', description=f'Selling {itemNOID} with ID: {ID} for {price} Eggs', color=0xF4FF00)
+            await ctx.send(embed=sellEmbed)
+        if action == 'buy':
+            if shop_data['items'][itemNOID][3] == 'inf':
+                pass
+            elif int(shop_data['items'][itemNOID][3]) < 0:
+                shop_data['items'].pop(itemNOID)
+            with open('Economies/economy_' + str(ctx.author.guild.id) + '.yml', 'r') as myFile:
+                bal = yaml.safe_load(myFile)
+            if bal[str(ctx.author.id)] + meastatt[ctx.author.guild.id][ctx.author.id] >= shop_data['items'][itemNOID][2]:
+                meastatt[ctx.author.guild.id][ctx.author.id] -= shop_data['items'][itemNOID][2]
+                if not shop_data['items'][itemNOID][5]:
+                    meastatt[ctx.author.guild.id][shop_data['items'][itemNOID][6]] += shop_data['items'][itemNOID][2]
+                if shop_data['items'][itemNOID][4]:
+                    remem = None
+                    remem = bot.get_user(shop_data['items'][itemNOID][4])
+                    await remem.send(f'{ctx.author.name + "#" + str(ctx.author.discriminator)} has just bought your product - {shop_data["items"][itemNOID][1]}!')
+                if shop_data['items'][itemNOID][3] != 'inf':
+                    meanShopData = int(shop_data['items'][itemNOID][3]) 
+                    meanShopData -= 1
+                    shop_data['items'][itemNOID][3] = str(meanShopData)
+                buyEmbed = discord.Embed(title='Buying info', description=f'Bought {itemNOID} with ID: {shop_data["items"][itemNOID][0]} for {shop_data["items"][itemNOID][2]} Eggs', color=0xF4FF00)
+                if shop_data['items'][itemNOID][3] != 'inf':
+                    if int(shop_data['items'][itemNOID][3]) <= 0:
+                        shop_data['items'].pop(itemNOID)
+                with open('Shops/shop_' + str(ctx.author.guild.id) + '.yml', 'w') as shopData:
+                    shopData.write(yaml.dump(shop_data))
+                await ctx.send(embed=buyEmbed)
+            else:
+                await ctx.send(f'Sorry, {ctx.author.name}. You don\'t seem to have enough money to buy that')
+        if action == 'botsell' and ctx.author.id == ctx.author.guild.owner.id and not None in args:
+            ID = ''
+            for i in range(8):
+                ID = ID + chars[random.randint(0, len(chars)-1)]
+                if remind != 'inf':
+                    if int(remind) > 0:
+                        toRMD = ctx.author.id
+                    else:
+                        toRMD = None
+                else:
+                    toRMD = ctx.author.id    
+                isBot = True
+                seller = bot.user.id
+            shop_data['items'][ID] = [ID, itemNOID, int(price), amount, toRMD, isBot, seller] 
+            with open('Shops/shop_' + str(ctx.author.guild.id) + '.yml', 'w') as shopData:
+                shopData.write(yaml.dump(shop_data))
+            botsellEmbed = discord.Embed(title='Botselling info', description=f'Selling {itemNOID} with ID: {ID} for {price} Eggs', color=0xF4FF00)
+            await ctx.send(embed=botsellEmbed)
+        elif action == 'botsell' and ctx.author.id != ctx.author.guild.owner.id:
+            await ctx.send('Sorry, you don\'t have the permission to use this command')
+    if not action: 
+        shopEmbed = discord.Embed(title=f'{ctx.author.guild.name}\'s shop', description='Current Offers:', color=0xF4FF00)
+        for offer in shop_data['items']:
+            meanseller = bot.get_user(shop_data['items'][offer][6])
+            meanseller = meanseller.name + '#' + str(meanseller.discriminator)
+            shopEmbed.add_field(name=f'{shop_data["items"][offer][1]}', value=f'Price: {shop_data["items"][offer][2]} Eggs\nID: {shop_data["items"][offer][0]}\nSeller: {meanseller}')
+        await ctx.send(embed=shopEmbed)
+    
+
 @tasks.loop(seconds=300)
 async def updateEggs():
     saveECO(meastatt)
@@ -380,6 +465,14 @@ async def helpMe(ctx):
     helpEconomyEmbed.add_field(name='spin', value='**Arguments:** *Takes 0 arguments*\n**Description:** *For 20 eggs you can roll the dice! You can lose your Eggs, or earn a great fortune*', inline=False)
     helpEconomyEmbed.set_thumbnail(url='https://acegif.com/wp-content/gifs/coin-flip-49.gif')
 
+    shopEmbed = discord.Embed(title='Shop related commands (Economy subcommands):', description='Prefix: ^', color=0xFF5600)
+    shopEmbed.add_field(name='shop {action} {Name/ID} {price} {remind} {amount of sells}', value='A prefix for all of the shopping actions', inline=False)
+    shopEmbed.add_field(name='Selling', value='To sell something, type:\n***^shop sell {A name, use underscores instead of spaces} {price, must be an integer} {whether you want to be reminded when someone buys your product. 1 - yes, 0 - no} {how many times do you want to sell your product, if you want to sell it infinite amount of times, type "inf"}***', inline=False)
+    shopEmbed.add_field(name='Buying', value='To buy something, type:\n***^shop buy {product\'s ID}***', inline=False)
+    shopEmbed.add_field(name='Viewing the shop', value='To view the shop type:\n***^shop***', inline=False)
+    shopEmbed.add_field(name='Making the bot sell something', value='To make the bot sell something type:\n***^shop botsell {A name, use underscores instead of spaces} {price, must be an integer} {whether you want to be reminded when someone buys your product. 1 - yes, 0 - no} {how many times do you want to sell your product, if you want to sell it infinite amount of times, type "inf"}***', inline=False)
+    shopEmbed.set_thumbnail(url='https://static.wixstatic.com/media/94c9af_a45d0f21ee9b4cc796c5058a9589c574~mv2.gif')
+
     helpFunnyEmbed = discord.Embed(title='Utterly useless commands:', description='Prefix: ^', color=0x11BD00)
     helpFunnyEmbed.add_field(name='distort', value='**Arguments:** *Takes 1 crucial argument: text*\n**Description:** *Distorts a text ex. Eggs are cool ==> eGGs ArE cOoL*', inline=False)
     helpFunnyEmbed.add_field(name='annoy {user mention}', value='**Arguments:** *Takes 1 crucial argument: user mention*\n**Description:** *Annoys the chosen user*\n**SERVER OWNER COMMAND**', inline=False)
@@ -389,5 +482,6 @@ async def helpMe(ctx):
     await ctx.send(embed=helpEmbed)
     await ctx.send(embed=helpYoutubeEmbed)
     await ctx.send(embed=helpEconomyEmbed)
+    await ctx.send(embed=shopEmbed)
     await ctx.send(embed=helpFunnyEmbed)
 bot.run(TOKEN)

@@ -15,7 +15,7 @@ It was made as a project to learn about discord.py, so it isn't a good bot by an
 Eggie has:
 
 * **a Youtube integration**
-* **a Simple economy system**
+* **a Simple economy system with a simple shop**
 * **some funny commands**
 
 # Inviting the bot
