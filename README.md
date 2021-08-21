@@ -27,7 +27,7 @@ To invite the bot, contact the author. You can find me on discord - *Egg#0690*.
 To install the bot:
 
 1. Download all of the files from the repository
-<a href="bot.py" download>Click to Download</a>
+<a id="raw-url" href="https://raw.githubusercontent.com/Jakoobb/Eggie.py/master/filename">Download FILE</a>
 2. Make sure that you have Python v.3.9+ downloaded
 3. Download the following libraries using pip
 * *discord.py*
